@@ -15,7 +15,7 @@ export default function Form() {
                     <span className="block text-sm mt-2">initial investment</span>
                 </div>
                 <div className="relative block border rounded-lg p-4 shadow">
-                    <span className="block text-sm mb-1">I'll add</span>
+                    <span className="block text-sm mb-1">I&apos;ll add</span>
                     <Text
                         defaultValue={1000}
                         increment={1000}
@@ -25,7 +25,7 @@ export default function Form() {
                 </div>
                 <div className="relative block border rounded-lg p-4 shadow">
 
-                    <span className="block text-sm mb-1">I'll get a</span>
+                    <span className="block text-sm mb-1">I&apos;ll get a</span>
                     <Text
                         defaultValue={7}
                         increment={1}
@@ -34,7 +34,7 @@ export default function Form() {
                     <span className="block text-sm mt-2">compounded monthly</span>
                 </div>
                 <div className="relative block border rounded-lg p-4 shadow">
-                    <span className="block text-sm mb-1">I've got</span>
+                    <span className="block text-sm mb-1">I&apos;ve got</span>
                     <Text
                         defaultValue={25}
                         increment={1}

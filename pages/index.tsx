@@ -19,7 +19,7 @@ export default function Home() {
             Compound Interest Calculator!
           </h1>
           <p className="text-center">
-            Get your money in the market and watch it grow over time. We're talking stacks on stacks on stacks.
+            Get your money in the market and watch it grow over time. We&apos;re talking stacks on stacks on stacks.
           </p>
           <Form />
         </div>      
