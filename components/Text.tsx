@@ -62,7 +62,7 @@ export default function Text(props: FieldInputProps) {
         context[defaultValue.name] = count;
 
         setContext({ ...context });
-    }, [count]);
+    }, [increment, type ,count]);
 
     function increase() {
         let newCount = count + increment;
