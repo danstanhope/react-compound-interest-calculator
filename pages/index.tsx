@@ -2,8 +2,29 @@ import Head from 'next/head'
 import Footer from '../components/Footer';
 import Header from '../components/Header';
 import Form from '../components/Form';
+import React, { useReducer, createContext, useState } from 'react';
+import { Context } from "../context/CalcValueContext";
+import { GraphCtx } from "../context/GraphDataContext";
+import Graph from '../components/Graph';
+import { CalcProps, GraphProps } from '../types';
 
 export default function Home() {
+  const initialCalcProps: CalcProps = {
+    initial: 50000,
+    payment: 1000,
+    paymentFrequency: 'monthly',
+    interest: 7,
+    compoundFrequency: 'monthly',
+    years: 25
+  };
+
+  const initialGraphProps: GraphProps = {
+    values: []
+  };
+
+  const [context, setContext] = useState(initialCalcProps);
+  const [graphCtx, setGraphCtx] = useState(initialGraphProps);
+
   return (
     <div className="flex flex-col h-screen justify-between text-slate-500">
       <Head>
@@ -12,17 +33,22 @@ export default function Home() {
         <link rel="icon" href="/favicon.ico" />
       </Head>
 
-      <Header /> 
+      <Header />
       <main className="mb-auto max-w-7xl mx-auto">
-        <div className="my-md sm:my-xxl my-24">
+        <div className="my-md sm:my-xxl mt-24 mb-12">
           <h1 className="text-5xl font-bold text-center text-slate-800 mb-4">
-            Compound Interest Calculator!
+            Compound Interest Calculator.
           </h1>
           <p className="text-center">
             Get your money in the market and watch it grow over time. We&apos;re talking stacks on stacks on stacks.
           </p>
-          <Form />
-        </div>      
+          <Context.Provider value={[context, setContext]}>
+            <GraphCtx.Provider value={[graphCtx, setGraphCtx]}>
+              <Form />
+              <Graph />
+            </GraphCtx.Provider>
+          </Context.Provider>
+        </div>
         <div>
           <div className="flex flex-col sm:flex-row justify-center items-center">
 

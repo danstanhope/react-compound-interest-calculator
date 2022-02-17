@@ -1,92 +1,139 @@
-import React, { useState, useEffect, Fragment } from 'react';
+import React, { useState, useEffect, Fragment, useContext } from 'react';
+import { Context } from "../context/CalcValueContext";
+import { CalcProps } from '../types';
+import { formatMoney } from '../helpers';
 import { ChevronDownIcon, ChevronUpIcon } from '@heroicons/react/solid';
 
 interface FieldInputProps {
     increment: number;
-    defaultValue: number;
-    type?: 'money' | 'percent' | 'year';
+    defaultValue: any;
+    showArrows?: boolean;
+    bounds: { min: number, max: number },
+    type: 'money' | 'percent' | 'year';
 };
 
-const formatMoney = (value: number) => {
-    if (value >= 1000000) {
-        return `${Intl.NumberFormat().format(value / 1000000)}M`;
-    } else if (value >= 1000) {
-        return `${Intl.NumberFormat().format(value / 1000)}K`;
-    } else {
-        return Intl.NumberFormat().format(value)
-    }
-};
-
-const fieldString = ({ increment, defaultValue, type }: FieldInputProps) => {
+const friendlyFieldString = ({ increment, defaultValue, type }: FieldInputProps) => {
     if (type === 'money') {
-        let tmp = formatMoney(defaultValue);
-        return `$${tmp}`;
+        let tmp = formatMoney(defaultValue.value);
+
+        return `${tmp}`;
     } else if (type === 'percent') {
-        return `${defaultValue}%`;
+        return `${defaultValue.value}%`;
     } else {
-        return `${defaultValue}`;
+        return `${defaultValue.value}`;
     }
 };
 
 export default function Text(props: FieldInputProps) {
-    const { increment, type, defaultValue } = props;
-    let fieldstr = fieldString(props);
+    const { increment, type, defaultValue, showArrows, bounds } = props;
+    const [context, setContext] = useContext(Context);
 
-    const [text, setText] = useState(fieldstr);
-    const [count, setCount] = useState(defaultValue);
-    const [visible, setVisible] = useState(false);
 
-    useEffect(() => {        
-        let fieldstr = fieldString({
+    let fieldstr = friendlyFieldString(props);
+
+    const [text, setText] = useState<string>(fieldstr);
+    const [count, setCount] = useState<any>(defaultValue.value);
+    const [visible, setVisible] = useState<boolean>(false);
+
+    useEffect(() => {
+        if (count === '') return;
+
+        let fieldstr = friendlyFieldString({
             increment,
-            defaultValue: count,
-            type
+            defaultValue: {
+                name: defaultValue.name,
+                value: count
+            },
+            type,
+            showArrows,
+            bounds
         });
 
         setText(fieldstr);
+        const initialCalcProps: CalcProps = {
+            initial: count,
+            payment: 1000,
+            paymentFrequency: 'monthly',
+            interest: 7,
+            compoundFrequency: 'monthly',
+            years: 25
+        };
+
+        context[defaultValue.name] = count;
+
+        setContext({ ...context });
     }, [count]);
 
     function increase() {
-        setCount(prevState => prevState + increment);
+        let newCount = count + increment;
+
+        if (newCount > bounds.max) return;
+
+        setCount(newCount);
     }
 
-    function decrease() {        
+    function decrease() {
         let newCount = count - increment;
-        
-        if (newCount < 0) return;
 
-        setCount(prevState => newCount);
+        if (newCount < bounds.min) return;
+
+        setCount(newCount);
+    }
+
+    function change(e: React.ChangeEvent<HTMLInputElement>) {
+        if (e.target.value) {
+            let newCount: number = parseInt(e.target.value);
+
+            if (newCount > bounds.max || newCount < bounds.min) return;
+
+            setCount(newCount);
+        } else {
+            setCount('');
+        }
+    }
+
+    function toggle(isVisible: boolean) {
+        if (!count) {
+            setCount(0);
+        }
+
+        setVisible(isVisible);
     }
 
     return (
         <Fragment>
-            {!visible &&
-                <div
-                    className="w-auto inline-block"
-                >
-                    <div className="flex select-none">
-                        <strong
-                            onClick={() => setVisible(!visible)}
-                            className="font-bold text-5xl text-slate-800 inline-block underline cursor-pointer">{text}</strong>
-                        <div className="flex flex-col justify-center"> 
-                            <ChevronUpIcon
-                                onClick={increase}
-                                className="h-5 w-5 inline-block text-slate-500 cursor-pointer" /> 
-                            <ChevronDownIcon
-                                onClick={decrease}
-                                className="h-5 w-5 inline-block text-slate-500 cursor-pointer" /> 
-                        </div>
-                    </div>
-                </div>}
-            {visible &&
-            
-                <input
-                    className="border border-slate-300 text-5xl inline-block w-full shadow-sm py-4 px-6"
-                    type="text"
-                    value={text}
-                    onBlur={() => setVisible(!visible)}
-                    onChange={e => setText(e.target.value)} />}
+            <div
+                className="w-auto inline-block"
+            >
+                <div className="flex h-12">
+                    {!visible &&
+                        <Fragment>
+                            <strong
+                                onClick={() => toggle(!visible)}
+                                className="font-bold text-5xl text-slate-800 inline-block underline cursor-pointer">{text}</strong>
+                            {showArrows &&
+                                <div className="flex flex-col justify-center">
 
+                                    <ChevronUpIcon
+                                        onClick={increase}
+                                        className="h-5 w-5 inline-block text-slate-500 cursor-pointer" />
+                                    <ChevronDownIcon
+                                        onClick={decrease}
+                                        className="h-5 w-5 inline-block text-slate-500 cursor-pointer" />
+                                </div>
+                            }
+                        </Fragment>}
+                    {visible &&
+                        <input
+                            className="border font-bold text-5xl text-slate-800 w-48 shadow-sm"
+                            type="number"
+                            value={count}
+                            autoFocus
+                            onBlur={() => toggle(!visible)}
+                            onChange={change} />
+                    }
+                </div>
+            </div>
         </Fragment>
     )
 }
