@@ -8,7 +8,7 @@ export default function Table () {
   return (
     <div className='mt-8'>
       <h2 className='text-base font-semibold tracking-wider text-pink-600 uppercase text-center'>
-        Data
+        Overview
       </h2>
       <p className='mt-2 text-3xl font-extrabold text-gray-900 tracking-tight sm:text-4xl text-center'>
         Your year-by-year breakdown
