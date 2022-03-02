@@ -110,7 +110,7 @@ export default function Text (props: FieldInputProps) {
 
       setCount(newCount)
     } else {
-      setCount('')
+      setCount(0)
     }
   }
 
