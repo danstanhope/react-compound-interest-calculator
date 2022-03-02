@@ -78,7 +78,7 @@ export default function Graph () {
                   <dd className='text-3xl font-extrabold text-gray-600'>
                     {formatMoney(
                       totalPayment[totalPayment.length - 1]?.toFixed(0)
-                    ) ?? 0}
+                    )}
                   </dd>
                   <dt className='mt-0 text-md leading-6  text-sm text-gray-500'>
                     Total Payments Made
@@ -96,7 +96,7 @@ export default function Graph () {
                 </div>
                 <div className='flex flex-col border-t border-gray-100 p-4 text-center sm:border-0 sm:border-l'>
                   <dd className='text-3xl font-extrabold text-pink-600'>
-                    {formatMoney(totalMoney[totalMoney.length - 1]?.toFixed(0)) ?? 0 }
+                    {formatMoney(totalMoney[totalMoney.length - 1]?.toFixed(0))}
                   </dd>
                   <dt className='mt-0 text-md leading-6  text-sm text-gray-500'>
                     Grand Total

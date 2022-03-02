@@ -1,9 +1,13 @@
-export const formatMoney = (value: number) => {    
+export const formatMoney = (value: number) => {   
+    let val:string;
+
     if (value >= 1000000) {
-        return `$${Intl.NumberFormat().format(value / 1000000)}M`;
+        val = `$${Intl.NumberFormat().format(value / 1000000)}M`;
     } else if (value >= 1000) {
-        return value % 1000 === 0 ? `$${Intl.NumberFormat().format(value/1000)}K` : `$${Intl.NumberFormat().format(value)}`;    
+        val = value % 1000 === 0 ? `$${Intl.NumberFormat().format(value/1000)}K` : `$${Intl.NumberFormat().format(value)}`;    
     } else {
-        return `$${Intl.NumberFormat().format(value)}`;
+        val = `$${Intl.NumberFormat().format(value)}`;
     }
+
+    return Number.isNaN(val) ? '--' : val;
 };
