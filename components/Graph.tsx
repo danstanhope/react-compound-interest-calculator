@@ -1,7 +1,6 @@
-import React, { useContext, useState, useEffect } from 'react'
-import { Context } from '../context/CalcValueContext'
-import { GraphCtx } from '../context/GraphDataContext'
-import { formatMoney } from '../helpers'
+import React, { useContext, useState } from 'react';
+import { GraphCtx } from '../context/GraphDataContext';
+import { formatMoney } from '../helpers';
 import {
   Chart as ChartJS,
   CategoryScale,
@@ -10,21 +9,19 @@ import {
   Title,
   Tooltip,
   Legend
-} from 'chart.js'
-import { Bar } from 'react-chartjs-2'
+} from 'chart.js';
+import { Bar } from 'react-chartjs-2';
 
-ChartJS.register(CategoryScale, LinearScale, BarElement, Title, Tooltip, Legend)
+ChartJS.register(CategoryScale, LinearScale, BarElement, Title, Tooltip, Legend);
 
 export default function Graph () {
-  const [context, setContext] = useContext(Context)
-  const [graph, setGraphCtx] = useContext(GraphCtx)
+  const [graphCtx, setGraphCtx] = useContext(GraphCtx);
+  const [chartData, setChartData] = useState({});
 
-  const [chartData, setChartData] = useState({})
-
-  const labels = graph.values.map((value, index) => `Year ${value.year}`)
-  const totalMoney = graph.values.map((value, index) => value.totalMoney)
-  const totalInterest = graph.values.map((value, index) => value.totalInterest)
-  const totalPayment = graph.values.map((value, index) => value.totalPayment)
+  const labels = graphCtx.values.map((value) => `Year ${value.year}`);
+  const totalMoney = graphCtx.values.map((value) => value.totalMoney);
+  const totalInterest = graphCtx.values.map((value) => value.totalInterest);
+  const totalPayment = graphCtx.values.map((value) => value.totalPayment);
 
   const options = {
     responsive: true,
@@ -52,7 +49,8 @@ export default function Graph () {
         stacked: true
       }
     }
-  }
+  };
+
   const data = {
     labels,
     datasets: [
@@ -67,7 +65,7 @@ export default function Graph () {
         backgroundColor: 'rgba(219, 39, 119, 1)'
       }
     ]
-  }
+  };
 
   return (
     <>
@@ -110,75 +108,6 @@ export default function Graph () {
         </div>
         <div className='p-6'>
           <Bar options={options} data={data} />
-        </div>
-      </div>
-      <div className='mt-8'>
-        <h2 className='text-base font-semibold tracking-wider text-pink-600 uppercase text-center'>
-          Data
-        </h2>
-        <p className='mt-2 text-3xl font-extrabold text-gray-900 tracking-tight sm:text-4xl text-center'>
-          Your year-by-year breakdown
-        </p>
-        <div className='flex flex-col mt-10 bg-gray-50 rounded-xl p-6'>
-          <div className='-my-2 overflow-x-auto sm:-mx-6 lg:-mx-8'>
-            <div className='py-2 align-middle inline-block min-w-full sm:px-6 lg:px-8'>
-              <div className='shadow overflow-hidden border-b border-gray-200 sm:rounded-lg'>
-                <table className='min-w-full divide-y divide-gray-200'>
-                  <thead className='bg-gray-100'>
-                    <tr>
-                      <th
-                        scope='col'
-                        className='px-6 py-3 text-left text-xs font-medium text-gray-900 uppercase tracking-wider'
-                      >
-                        Year
-                      </th>
-                      <th
-                        scope='col'
-                        className='px-6 py-3 text-left text-xs font-medium text-gray-900 uppercase tracking-wider'
-                      >
-                        Payment
-                      </th>
-                      <th
-                        scope='col'
-                        className='px-6 py-3 text-left text-xs font-medium text-gray-900 uppercase tracking-wider'
-                      >
-                        Interest
-                      </th>
-                      <th
-                        scope='col'
-                        className='px-6 py-3 text-left text-xs font-medium text-gray-900 uppercase tracking-wider'
-                      >
-                        Earned
-                      </th>
-                    </tr>
-                  </thead>
-                  <tbody>
-                    {graph.values.map((item, personIdx) => (
-                      <tr
-                        key={item.year}
-                        className={
-                          item.year % 2 === 0 ? 'bg-white' : 'bg-gray-50'
-                        }
-                      >
-                        <td className='px-6 py-4 whitespace-nowrap text-sm font-medium text-gray-900'>
-                          {item.year}
-                        </td>
-                        <td className='px-6 py-4 whitespace-nowrap text-sm font-medium'>
-                          {formatMoney(item.totalPayment.toFixed(2))}
-                        </td>
-                        <td className='px-6 py-4 whitespace-nowrap text-sm text-gray-500'>
-                          {formatMoney(item.totalInterest.toFixed(2))}
-                        </td>
-                        <td className='px-6 py-4 whitespace-nowrap text-sm text-gray-500'>
-                          {formatMoney(item.totalMoney.toFixed(2))}
-                        </td>
-                      </tr>
-                    ))}
-                  </tbody>
-                </table>
-              </div>
-            </div>
-          </div>
         </div>
       </div>
     </>

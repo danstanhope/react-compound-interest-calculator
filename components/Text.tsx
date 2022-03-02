@@ -1,5 +1,5 @@
 import React, { useState, useEffect, Fragment, useContext } from 'react'
-import { Context } from '../context/CalcValueContext'
+import { CalcCtx } from '../context/CalcValueContext'
 import { CalcProps } from '../types'
 import { formatMoney } from '../helpers'
 import { ChevronDownIcon, ChevronUpIcon } from '@heroicons/react/solid'
@@ -9,9 +9,13 @@ interface ValidationObj {
   max: number
 }
 
+interface DefaultObj {
+  name: string
+  value: number
+}
 interface FieldInputProps {
   increment: number
-  defaultValue: any
+  defaultValue: DefaultObj
   showArrows?: boolean
   bounds: ValidationObj
   type: 'money' | 'percent' | 'year'
@@ -23,7 +27,7 @@ const friendlyFieldString = ({
   type
 }: FieldInputProps) => {
   if (type === 'money') {
-    let tmp = formatMoney(defaultValue.value)
+    const tmp = formatMoney(defaultValue.value)
 
     return `${tmp}`
   } else if (type === 'percent') {
@@ -35,19 +39,19 @@ const friendlyFieldString = ({
 
 export default function Text (props: FieldInputProps) {
   const { increment, type, defaultValue, showArrows, bounds } = props
-  const [context, setContext] = useContext(Context)
+  const [calcCtx, setCalcCtx] = useContext(CalcCtx)
 
-  let fieldstr = friendlyFieldString(props)
+  const fieldstr = friendlyFieldString(props)
 
   const [text, setText] = useState<string>(fieldstr)
-  const [count, setCount] = useState<any>(defaultValue.value)
+  const [count, setCount] = useState<number>(defaultValue.value)
   const [visible, setVisible] = useState<boolean>(false)
   const [error, setError] = useState<string>('')
 
   useEffect(() => {
-    if (count === '') return
+    if (!count) return
 
-    let fieldstr = friendlyFieldString({
+    const fieldstr = friendlyFieldString({
       increment,
       defaultValue: {
         name: defaultValue.name,
@@ -57,14 +61,14 @@ export default function Text (props: FieldInputProps) {
       showArrows,
       bounds
     })
-    context[defaultValue.name] = count
+    calcCtx[defaultValue.name] = count
 
     setText(fieldstr)
-    setContext(context)
-  }, [increment, type, count, bounds, context])
+    setCalcCtx(calcCtx)
+  }, [increment, type, count, bounds, calcCtx])
 
   function increase () {
-    let newCount = count + increment
+    const newCount = count + increment
 
     if (newCount > bounds.max) {
       setError(`Must be between ${bounds.min} and ${bounds.max}`);
@@ -78,7 +82,7 @@ export default function Text (props: FieldInputProps) {
   }
 
   function decrease () {
-    let newCount = count - increment
+    const newCount = count - increment
 
     if (newCount < bounds.min) {
       setError(`Must be between ${bounds.min} and ${bounds.max}`);
@@ -93,7 +97,7 @@ export default function Text (props: FieldInputProps) {
 
   function change (e: React.ChangeEvent<HTMLInputElement>) {
     if (e.target.value) {
-      let newCount: number = parseInt(e.target.value)
+      const newCount: number = parseInt(e.target.value)
 
 
       if (newCount > bounds.max || newCount < bounds.min) {

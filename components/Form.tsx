@@ -1,13 +1,13 @@
-import React, { useContext, useState, useEffect } from 'react'
+import React, { useContext, useEffect } from 'react'
 import Text from './Text'
 import DropDown from './DropDown'
-import { Context } from '../context/CalcValueContext'
+import { CalcCtx } from '../context/CalcValueContext'
 import { GraphCtx } from '../context/GraphDataContext'
-import { CalcProps, GraphProps, GraphItem } from '../types'
-//https://www.vertex42.com/Calculators/compound-interest-calculator.html#rate-per-period
+import { GraphItem } from '../types'
+
 export default function Form () {
-  const [context, setContext] = useContext(Context)
-  const [graph, setGraphCtx] = useContext(GraphCtx)
+  const [calcCtx, setCalcCtx] = useContext(CalcCtx)
+  const [graphCtx, setGraphCtx] = useContext(GraphCtx)
 
   useEffect(() => {
     buildGraphData();
@@ -41,53 +41,56 @@ export default function Form () {
   }
 
   function * Calculate (): IterableIterator<GraphItem> {
-    let {
-      compoundFrequency,
-      paymentFrequency,
-      initial,
-      interest,
-      payment,
-      years
-    } = context
-
-    let frequencyMap = {
+    const frequencyMap = {
       monthly: 12,
       quarterly: 4,
       semiannual: 2,
       yearly: 1
-    }
+    };
 
-    paymentFrequency = frequencyMap[paymentFrequency]
-    compoundFrequency = frequencyMap[compoundFrequency]
-    interest = interest / 100
+    const {
+      initial,      
+      payment,
+      years
+    } = calcCtx;
 
-    let rate = Rate(interest, paymentFrequency, compoundFrequency)
-    let fv = 0
+    let {
+      compoundFrequency,
+      paymentFrequency,
+      interest      
+    } = calcCtx;
+    
+    paymentFrequency = frequencyMap[paymentFrequency];
+    compoundFrequency = frequencyMap[compoundFrequency];
+    interest = interest / 100;
+
+    const rate = Rate(interest, paymentFrequency, compoundFrequency);
+    let fv = 0;
 
     for (let i = 1; i <= years; i++) {
-      let nper = nPer(paymentFrequency, i)
+      const nper = nPer(paymentFrequency, i);
 
-      fv = FV(initial, rate, nper, payment)
+      fv = FV(initial, rate, nper, payment);
 
-      let totalPayments = payment * nper + initial
-      let totalInterest = fv - totalPayments
-
-      let graphItem: GraphItem = {
+      const totalPayments = payment * nper + initial;
+      const totalInterest = fv - totalPayments;
+      const graphItem: GraphItem = {
         year: i,
         totalPayment: totalPayments,
         totalInterest: totalInterest,
         totalMoney: fv
-      }
-      yield graphItem
+      };
+
+      yield graphItem;
     }
 
     return fv
   }
 
   const buildGraphData = () => {
-    let graph: GraphItem[] = []
+    const graph: GraphItem[] = []
 
-    for (let amount of Calculate()) {
+    for (const amount of Calculate()) {
       graph.push(amount)
     }
 
@@ -100,7 +103,7 @@ export default function Form () {
         <div className='relative block border rounded-lg p-4 shadow col-span-1'>
           <span className='block text-sm mb-1'>I have a</span>
           <Text
-            defaultValue={{ name: 'initial', value: context.initial }}
+            defaultValue={{ name: 'initial', value: calcCtx.initial }}
             increment={1000}
             type='money'
             bounds={{ min: 0, max: 999999999 }}
@@ -110,7 +113,7 @@ export default function Form () {
         <div className='relative block border rounded-lg p-4 shadow col-span-1'>
           <span className='block text-sm mb-1'>I&apos;ll add</span>
           <Text
-            defaultValue={{ name: 'payment', value: context.payment }}
+            defaultValue={{ name: 'payment', value: calcCtx.payment }}
             increment={1000}
             type='money'
             bounds={{ min: 0, max: 999999 }}
@@ -130,7 +133,7 @@ export default function Form () {
         <div className='relative block border rounded-lg p-4 shadow col-span-1'>
           <span className='block text-sm mb-1'>I&apos;ll get a</span>
           <Text
-            defaultValue={{ name: 'interest', value: context.interest }}
+            defaultValue={{ name: 'interest', value: calcCtx.interest }}
             increment={1}
             type='percent'
             showArrows={true}
@@ -153,7 +156,7 @@ export default function Form () {
         <div className='relative block border rounded-lg p-4 shadow col-span-1'>
           <span className='block text-sm mb-1'>I&apos;ve got</span>
           <Text
-            defaultValue={{ name: 'years', value: context.years }}
+            defaultValue={{ name: 'years', value: calcCtx.years }}
             increment={1}
             type='year'
             showArrows={true}
