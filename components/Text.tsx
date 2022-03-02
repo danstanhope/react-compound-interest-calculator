@@ -44,7 +44,7 @@ export default function Text (props: FieldInputProps) {
   const fieldstr = friendlyFieldString(props)
 
   const [text, setText] = useState<string>(fieldstr)
-  const [count, setCount] = useState<number>(defaultValue.value)
+  const [count, setCount] = useState<any>(defaultValue.value)
   const [visible, setVisible] = useState<boolean>(false)
   const [error, setError] = useState<string>('')
 
@@ -110,7 +110,7 @@ export default function Text (props: FieldInputProps) {
 
       setCount(newCount)
     } else {
-      setCount(0)
+      setCount('')
     }
   }
 
