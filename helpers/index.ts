@@ -8,6 +8,6 @@ export const formatMoney = (value: number) => {
     } else {
         val = `$${Intl.NumberFormat().format(value)}`;
     }
-console.log('val', val, Number.isNaN(val));
-    return Number.isNaN(val) ? '--' : val;
+
+    return !value ? '--' : val;
 };
