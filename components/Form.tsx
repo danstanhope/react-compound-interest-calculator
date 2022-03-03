@@ -137,7 +137,7 @@ export default function Form () {
             increment={1}
             type='percent'
             showArrows={true}
-            bounds={{ min: 1, max: 100 }}
+            bounds={{ min: 0.01 , max: 100 }}
           />
           <span className='block text-sm mt-2'>
             return compounded{' '}
