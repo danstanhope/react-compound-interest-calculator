@@ -4,6 +4,8 @@ import { formatMoney } from '../helpers';
 
 export default function Table () {
   const [graphCtx, setGraphCtx] = useContext(GraphCtx);
+  
+  if(graphCtx.values.length === 0) return null;
 
   return (
     <div className='mt-8'>
