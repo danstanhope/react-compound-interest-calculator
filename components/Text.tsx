@@ -49,8 +49,6 @@ export default function Text (props: FieldInputProps) {
   const [error, setError] = useState<string>('')
 
   useEffect(() => {
-    if (!count) return
-
     const fieldstr = friendlyFieldString({
       increment,
       defaultValue: {
@@ -61,7 +59,8 @@ export default function Text (props: FieldInputProps) {
       showArrows,
       bounds
     })
-    calcCtx[defaultValue.name] = count
+    console.log('count', count)
+    calcCtx[defaultValue.name] = count;
 
     setText(fieldstr)
     setCalcCtx(calcCtx)
@@ -99,7 +98,6 @@ export default function Text (props: FieldInputProps) {
     if (e.target.value) {
       const newCount: number = parseInt(e.target.value)
 
-
       if (newCount > bounds.max || newCount < bounds.min) {
         setError(`Must be between ${bounds.min} and ${bounds.max}`);
 
@@ -115,11 +113,12 @@ export default function Text (props: FieldInputProps) {
   }
 
   function toggle (isVisible: boolean) {
-    if (!count) {
-      setCount(bounds.min);
-    }
     setError('');
     setVisible(isVisible);
+    
+    if (!count) {      
+      setCount(bounds.min);      
+    }    
   }
   
   return (

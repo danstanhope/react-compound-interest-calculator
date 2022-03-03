@@ -9,5 +9,5 @@ export const formatMoney = (value: number) => {
         val = `$${Intl.NumberFormat().format(value)}`;
     }
 
-    return !value ? '--' : val;
+    return val;
 };
