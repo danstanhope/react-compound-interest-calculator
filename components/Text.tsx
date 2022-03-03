@@ -36,18 +36,19 @@ const friendlyFieldString = ({
     return `${defaultValue.value}`
   }
 }
-const formatNumber = (value: number, type: string): number => {
-  let number: number = value;
+
+
+const validate = (value: string, type: string): boolean => {
+  if(!value) return true;
 
   if(type === 'percent') {
-    number = parseFloat(value.toFixed(2));
+    return /^\d+\.{0,1}\d{0,2}$/.test(value);
   }else{
-    number = parseInt(value.toFixed(0));
+    return /^[0-9]+$/.test(value);
   }
-
-  return number;
-};
-
+  
+  return true;
+}
 export default function Text (props: FieldInputProps) {
   const { increment, type, defaultValue, showArrows, bounds } = props
   const [calcCtx, setCalcCtx] = useContext(CalcCtx)
@@ -58,8 +59,6 @@ export default function Text (props: FieldInputProps) {
   const [count, setCount] = useState<any>(defaultValue.value)
   const [visible, setVisible] = useState<boolean>(false)
   const [error, setError] = useState<string>('')
-
-  let inputType = type === 'percent' ? 'number' : 'text';
 
   useEffect(() => {
     const fieldstr = friendlyFieldString({
@@ -73,14 +72,14 @@ export default function Text (props: FieldInputProps) {
       bounds
     })
     
-    calcCtx[defaultValue.name] = count;
+    calcCtx[defaultValue.name] = parseFloat(count);
 
     setText(fieldstr)
     setCalcCtx(calcCtx)
   }, [increment, type, count, bounds, calcCtx])
 
   function increase () {
-    const newCount = formatNumber(count + increment, type);
+    const newCount = count + increment;
 
     if (newCount > bounds.max) {
       setError(`Must be between ${bounds.min} and ${bounds.max}`);
@@ -94,7 +93,7 @@ export default function Text (props: FieldInputProps) {
   }
 
   function decrease () {
-    const newCount = formatNumber(count - increment, type);
+    const newCount = count - increment;
 
     if (newCount < bounds.min) {
       setError(`Must be between ${bounds.min} and ${bounds.max}`);
@@ -107,19 +106,21 @@ export default function Text (props: FieldInputProps) {
     setCount(newCount)
   }
 
-  function change (e: React.ChangeEvent<HTMLInputElement>) {
+  function change (e: React.ChangeEvent<HTMLInputElement>) {   
+    if(!validate(e.target.value, type)){
+      return;
+    } 
+
     if (e.target.value) {
-      const newCount = formatNumber(parseFloat(e.target.value), type);
+      const newCount = parseFloat(e.target.value);
       
       if (newCount > bounds.max || newCount < bounds.min) {
         setError(`Must be between ${bounds.min} and ${bounds.max}`);
-
-        return;
       } else {
         setError('');
       }
 
-      setCount(newCount)
+      setCount(e.target.value)
     } else {
       setCount('')
     }
@@ -128,8 +129,8 @@ export default function Text (props: FieldInputProps) {
   function toggle (isVisible: boolean) {
     setError('');
     setVisible(isVisible);
-    
-    if (!count) {      
+        
+    if (!count || error) {      
       setCount(bounds.min);      
     }    
   }
@@ -163,7 +164,7 @@ export default function Text (props: FieldInputProps) {
           {visible && (
             <input
               className='border font-bold text-5xl text-slate-800 w-48 shadow-sm'
-              type={inputType}
+              type="text"
               value={count}
               autoFocus
               onBlur={() => toggle(!visible)}

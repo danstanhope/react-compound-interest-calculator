@@ -59,7 +59,7 @@ export default function Form () {
       paymentFrequency,
       interest      
     } = calcCtx;
-    
+
     paymentFrequency = frequencyMap[paymentFrequency];
     compoundFrequency = frequencyMap[compoundFrequency];
     interest = interest / 100;
@@ -99,7 +99,7 @@ export default function Form () {
 
   return (
     <div className='mt-10'>
-      <div className='mt-1 grid grid-cols-2 gap-4 md:grid-cols-4 select-none p-8 md:p-0'>
+      <div className='mt-1 grid grid-cols-1 gap-4 md:grid-cols-4 select-none p-8 md:p-0'>
         <div className='relative block border rounded-lg p-4 shadow col-span-1'>
           <span className='block text-sm mb-1'>I have a</span>
           <Text
@@ -137,7 +137,7 @@ export default function Form () {
             increment={1}
             type='percent'
             showArrows={true}
-            bounds={{ min: 0.01 , max: 100 }}
+            bounds={{ min: 0.01, max: 100 }}
           />
           <span className='block text-sm mt-2'>
             return compounded{' '}
