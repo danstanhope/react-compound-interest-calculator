@@ -53,7 +53,7 @@ export default function Form () {
       payment,
       years
     } = calcCtx;
-console.log(initial, payment, years)
+
     let {
       compoundFrequency,
       paymentFrequency,
@@ -170,7 +170,7 @@ console.log(initial, payment, years)
       <div className='text-center'>
         <button
           onClick={buildGraphData}
-          className='mt-6 sm:mt-12 inline-flex bg-pink-600 bg-origin-border px-6 py-3 border border-transparent font-bold text-lg rounded-3xl shadow-sm text-white hover:from-pink-700 hover:to-pink-700'
+          className='mt-4 sm:mt-12 inline-flex bg-pink-600 bg-origin-border px-6 py-3 border border-transparent font-bold text-lg rounded-3xl shadow-sm text-white hover:from-pink-700 hover:to-pink-700'
         >
           <span>Show me the money</span>
           <svg

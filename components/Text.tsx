@@ -59,7 +59,7 @@ export default function Text (props: FieldInputProps) {
       showArrows,
       bounds
     })
-    console.log('count', count)
+    
     calcCtx[defaultValue.name] = count;
 
     setText(fieldstr)
