@@ -43,13 +43,25 @@ export default function Home () {
           property='og:description'
           content='Easy way to calculate compound interest for retirement savings, loan repayments. Stuff like that.'
         />
-        <meta
-          property='og:url'
-          content='https://compoundinterest.cloud'
-        />
+        <meta property='og:url' content='https://compoundinterest.cloud' />
         <meta property='og:site_name' content='compoundinterest.cloud' />
 
         <link rel='icon' href='/favicon.ico' />
+        <script
+          async
+          src='https://www.googletagmanager.com/gtag/js?id=G-40V30946DZ'
+        ></script>
+        <script
+          dangerouslySetInnerHTML={{
+            __html: `
+                        window.dataLayer = window.dataLayer || [];
+            function gtag(){dataLayer.push(arguments);}
+            gtag('js', new Date());
+
+            gtag('config', 'G-40V30946DZ');
+          `
+          }}
+        ></script>
       </Head>
 
       <Header />
